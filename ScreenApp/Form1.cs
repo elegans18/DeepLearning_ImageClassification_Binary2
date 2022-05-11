@@ -21,7 +21,9 @@ namespace ScreenApp
         {
             ClassLibrary1.Class1 test = new ClassLibrary1.Class1();
             test.Main();
-
+            var logData = test.logData;
+            var logData1 = test.logData1;
+            richTextBox1.Text = logData1 + logData;
         }
     }
 }

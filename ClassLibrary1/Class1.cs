@@ -11,6 +11,8 @@ namespace ClassLibrary1
 {
     public class Class1
     {
+        public string logData1;
+        public string logData;
         public void Main()
         {
             var projectDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
@@ -51,7 +53,7 @@ namespace ClassLibrary1
                 LabelColumnName = "LabelAsKey",
                 ValidationSet = validationSet,
                 Arch = ImageClassificationTrainer.Architecture.ResnetV2101,
-                MetricsCallback = (metrics) => Debug.WriteLine(metrics),
+                MetricsCallback = (metrics) => WriteData(metrics),
                 TestOnTrainSet = false,
                 ReuseTrainSetBottleneckCachedValues = true,
                 ReuseValidationSetBottleneckCachedValues = true
@@ -76,6 +78,7 @@ namespace ClassLibrary1
             ModelOutput prediction = predictionEngine.Predict(image);
 
             Debug.WriteLine("Classifying single image");
+            logData += "Classifying single image" + "\n";
             OutputPrediction(prediction);
         }
 
@@ -86,6 +89,7 @@ namespace ClassLibrary1
             IEnumerable<ModelOutput> predictions = mlContext.Data.CreateEnumerable<ModelOutput>(predictionData, reuseRowObject: true).Take(10);
 
             Debug.WriteLine("Classifying multiple images");
+            logData += "Classifying multiple image" + "\n";
             foreach (var prediction in predictions)
             {
                 OutputPrediction(prediction);
@@ -96,6 +100,7 @@ namespace ClassLibrary1
         {
             string imageName = Path.GetFileName(prediction.ImagePath);
             Debug.WriteLine($"Image: {imageName} | Actual Value: {prediction.Label} | Predicted Value: {prediction.PredictedLabel}");
+            logData += $"Image: {imageName} | Actual Value: {prediction.Label} | Predicted Value: {prediction.PredictedLabel}" + "\n";
         }
 
         public IEnumerable<ImageData> LoadImagesFromDirectory(string folder, bool useFolderNameAsLabel = true)
@@ -130,6 +135,11 @@ namespace ClassLibrary1
                     Label = label
                 };
             }
+        }
+
+        public void WriteData(ImageClassificationTrainer.ImageClassificationMetrics data)
+        {
+            logData1 += data.ToString() + "\n";
         }
     }
 
